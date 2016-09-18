@@ -2,26 +2,13 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var mongodb = require('mongodb');
 var temp = 0;
 var connected = false;
 var all_chat = [];
 var app_title = '';
 var port = process.env.PORT || 3000;
-var db;
-var uri = 'mongodb://127.0.0.1/test';
-mongodb.MongoClient.connect(uri ,function(error,database) {
-  if(error) {
-    console.log('made it');
-    console.log(error);
-    process.exit();
-  } else {
-    console.log('successfull connection');
-    db = database;
-    http.listen(port, function(){
-      console.log('listening on *:3000');
-    });
-  }
+http.listen(port, function(){
+  console.log('listening on *:3000');
 });
 //app.use(express.static(__dirname + '/login.js'));
 app.use(express.static(__dirname + '/public'));
