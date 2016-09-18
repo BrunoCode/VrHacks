@@ -10,22 +10,11 @@ var port = process.env.PORT || 3000;
 http.listen(port, function(){
   console.log('listening on *:3000');
 });
-//app.use(express.static(__dirname + '/login.js'));
 app.use(express.static(__dirname + '/public'));
 
-/*app.get('*', function(req, res){
-  res.sendfile(__dirname + '/public/index.html');
-});*/
 
 app.get('*', function(req, res){
   res.sendFile(__dirname + '/public/index.html');
-  /*var uri = 'mongodb://test:test@ds031865.mlab.com:31865/heroku_2vrl5f5p';
-  mongodb.MongoClient.connect(uri, function(err, db) {
-    console.log("what is up");
-    if(err) throw err;
-    //var tmp = db.questions.find();
-    console.log("working");
-  });*/
 });
 function saveMsg(msg) {
     all_chat.push(msg);
