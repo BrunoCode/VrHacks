@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <h1 id="appTitle"></h1>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+    </style>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <form action="">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/login.js"></script>
+    <script>
+      var socket = io().connect('http://localhost:3000');
+      socket.usr_name = null;
+      stuff();
+      socket.on('connection', function(msg){
+        if(msg.new_user) {
+          var list = null;
+          list = msg.all_msg;
+          if(list != null) {
+            for(var index = 0; index < list.length; index++) {
+              var nxt_msg = list[index];
+              if(nxt_msg != undefined) {
+                $('#messages').append($('<li>').text(nxt_msg));
+              }
+            }
+          }
+          var name = prompt(msg.hello + ' please enter a name for yourself ' + list.length);
+          socket.usr_name = name;
+          if(name != undefined && msg.admin) {
+            var title = prompt("please enter a title for the quiz");
+            document.getElementById("appTitle").innerHTML = title;
+          }
+        } else {
+          alert(msg.hello);
+        }
+      });
+      $('form').submit(function(){
+        var usr_msg = '';
+        if(socket.usr_name != null) {
+          usr_msg += socket.usr_name;
+          usr_msg += ': ';
+        }
+        usr_msg += $('#m').val();
+        $('#messages').append($('<li>').text(usr_msg));
+        socket.emit('chat message', usr_msg);
+        $('#m').val('');
+        return false;
+      });
+      socket.on('chat message', function(msg){
+        $('#messages').append($('<li>').text(msg));
+      });
+    </script>
+  </body>
+</html>
